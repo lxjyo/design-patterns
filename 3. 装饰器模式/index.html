@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="open">打开</button>
+    <script>
+      class Modal {
+        constructor(height, width, content) {
+          this.modal = this.createModal(height, width, content);
+        }
+
+        createModal(height, width, content) {
+          const modalInstance = document.createElement('div');
+          modalInstance.className = 'modal-container';
+          modalInstance.addEventListener('click', (e) => {
+            if (e.target.className === 'modal-container') {
+              modalInstance.style.display = 'none';
+            }
+          });
+          const modalContent = document.createElement('div');
+          modalContent.className = 'modal-content';
+          modalContent.style.height = height;
+          modalContent.style.width = width;
+          modalContent.innerHTML = content;
+          modalInstance.appendChild(modalContent);
+          document.body.appendChild(modalInstance);
+          return modalInstance;
+        }
+
+        open() {
+          this.modal.style.display = 'block';
+        }
+        close() {
+          this.modal.style.display = 'none';
+        }
+      }
+
+      function MakeSingleton(func) {
+        // 检查func是否为一个构造函数
+        if (
+          typeof func !== 'function' ||
+          !func.prototype ||
+          typeof func.prototype !== 'object'
+        ) {
+          console.log(2)
+          throw new Error(
+            'MakeSingleton: func must be a constructor function.'
+          );
+        }
+
+        let instance;
+        return function (...args) {
+          if (!instance) {
+            instance = new func(...args);
+          }
+          return instance;
+        };
+      }
+      const SingletonModal = MakeSingleton(Modal);
+
+      // 定义打开按钮
+      class OpenButton {
+        // 点击后展示弹窗（旧逻辑）
+        onClick() {
+          const modal = new SingletonModal('300px', '400px', '登录111');
+          modal.open();
+        }
+      }
+
+      // 定义按钮对应的装饰器
+      class Decorator {
+        // 将按钮实例传入
+        constructor(open_button) {
+          this.open_button = open_button;
+        }
+
+        onClick() {
+          this.open_button.onClick();
+          // “包装”了一层新逻辑
+          this.changeButtonStatus();
+        }
+
+        changeButtonStatus() {
+          this.changeButtonText();
+          this.disableButton();
+        }
+
+        disableButton() {
+          const btn = document.getElementById('open');
+          btn.setAttribute('disabled', true);
+        }
+
+        changeButtonText() {
+          const btn = document.getElementById('open');
+          btn.innerText = '快去登录';
+        }
+      }
+
+      const openButton = new OpenButton();
+      const decorator = new Decorator(openButton);
+
+      document.getElementById('open').addEventListener('click', function () {
+        // openButton.onClick()
+        // 此处可以分别尝试两个实例的onClick方法，验证装饰器是否生效
+        decorator.onClick();
+      });
+    </script>
+  </body>
+</html>

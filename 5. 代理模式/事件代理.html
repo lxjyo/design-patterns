@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>事件代理</title>
+  </head>
+  <body>
+    <div class="father">
+      <a href="#">链接1号</a><a href="#">链接2号</a><a href="#">链接3号</a
+      ><a href="#">链接4号</a><a href="#">链接5号</a>
+    </div>
+    <script>
+      // const nodes = document.getElementsByTagName('a');
+      // for(let i = 0; i < nodes.length; i++) {
+      //   nodes[i].addEventListener('click', function(e) {
+      //     e.preventDefault();
+      //     console.log(`3我是${this.innerText}`)
+      //   })
+      // }
+      const fatherNode = document.getElementsByClassName('father')[0];
+      fatherNode.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A') {
+          e.preventDefault();
+          console.log(`我是${e.target.innerText}`)
+        }
+      })
+    </script>
+  </body>
+</html>

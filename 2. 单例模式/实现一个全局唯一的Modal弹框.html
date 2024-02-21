@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .modal-container {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .modal-container .modal-content {
+        position: absolute;
+        padding: 10px;
+        top: 50%;
+        left: 50%;
+        border-radius: 4px;
+        transform: translate(-50%, -50%);
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="open">打开</button>
+    <script>
+      class Modal {
+        constructor(height, width, content) {
+          this.modal = this.createModal(height, width, content);
+        }
+
+        createModal(height, width, content) {
+          const modalInstance = document.createElement('div');
+          modalInstance.className = 'modal-container';
+          modalInstance.addEventListener('click', (e) => {
+            if (e.target.className === 'modal-container') {
+              modalInstance.style.display = 'none';
+            }
+          });
+          const modalContent = document.createElement('div');
+          modalContent.className = 'modal-content';
+          modalContent.style.height = height;
+          modalContent.style.width = width;
+          modalContent.innerHTML = content;
+          modalInstance.appendChild(modalContent);
+          document.body.appendChild(modalInstance);
+          return modalInstance;
+        }
+
+        open() {
+          this.modal.style.display = 'block';
+        }
+        close() {
+          this.modal.style.display = 'none';
+        }
+      }
+
+      function MakeSingleton(func) {
+        // 检查func是否为一个构造函数
+        if (
+          typeof func !== 'function' ||
+          !func.prototype ||
+          typeof func.prototype !== 'object'
+        ) {
+          console.log(2)
+          throw new Error(
+            'MakeSingleton: func must be a constructor function.'
+          );
+        }
+
+        let instance;
+        return function (...args) {
+          if (!instance) {
+            instance = new func(...args);
+          }
+          return instance;
+        };
+      }
+      const SingletonModal = MakeSingleton(Modal);
+      document.getElementById('open').addEventListener('click', () => {
+        const modal = new SingletonModal('300px', '400px', 'modal');
+        modal.open();
+      });
+    </script>
+  </body>
+</html>
